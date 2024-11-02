@@ -523,3 +523,120 @@ print(''.join([chr(int(''.join(decoded_flag[i:i + 8]), 2)) for i in range(0, len
 
 Rearrange the following equations to get the primes `p,q`
 
+N = p_q_&#x20;
+
+_c1 = (2_p + 3_q)\*\*e1 mod N_&#x20;
+
+_c2 = (5_p + 7\*q)\*\*e2 mod N
+
+```
+N = 14905562257842714057932724129575002825405393502650869767115942606408600343380327866258982402447992564988466588305174271674657844352454543958847568190372446723549627752274442789184236490768272313187410077124234699854724907039770193680822495470532218905083459730998003622926152590597710213127952141056029516116785229504645179830037937222022291571738973603920664929150436463632305664687903244972880062028301085749434688159905768052041207513149370212313943117665914802379158613359049957688563885391972151218676545972118494969247440489763431359679770422939441710783575668679693678435669541781490217731619224470152467768073
+e1 = 12886657667389660800780796462970504910193928992888518978200029826975978624718627799215564700096007849924866627154987365059524315097631111242449314835868137
+e2 = 12110586673991788415780355139635579057920926864887110308343229256046868242179445444897790171351302575188607117081580121488253540215781625598048021161675697
+c1 = 14010729418703228234352465883041270611113735889838753433295478495763409056136734155612156934673988344882629541204985909650433819205298939877837314145082403528055884752079219150739849992921393509593620449489882380176216648401057401569934043087087362272303101549800941212057354903559653373299153430753882035233354304783275982332995766778499425529570008008029401325668301144188970480975565215953953985078281395545902102245755862663621187438677596628109967066418993851632543137353041712721919291521767262678140115188735994447949166616101182806820741928292882642234238450207472914232596747755261325098225968268926580993051
+c2 = 14386997138637978860748278986945098648507142864584111124202580365103793165811666987664851210230009375267398957979494066880296418013345006977654742303441030008490816239306394492168516278328851513359596253775965916326353050138738183351643338294802012193721879700283088378587949921991198231956871429805847767716137817313612304833733918657887480468724409753522369325138502059408241232155633806496752350562284794715321835226991147547651155287812485862794935695241612676255374480132722940682140395725089329445356434489384831036205387293760789976615210310436732813848937666608611803196199865435145094486231635966885932646519
+```
+
+### Explanation
+
+$$Given,$$
+
+$$N = p \times q$$
+
+$$c_1 = ((\;2 \times p\;) + (\;3 \times q\;))^{e_1}\;mod\;N \rightarrow [1]$$
+
+$$c_2 = ((\;5 \times p\;) + (\;7 \times q\;))^{e_2}\;mod\;N \rightarrow [2]$$
+
+To get the values of p and q, we have to solve the given equations. First we have to make the equations exponentially same. To do that multiply equation `[1]` by $$1^{e_2}$$ and equation \[2] by $$1^{e_1}$$, which results in the following form,
+
+$$c_1^{e_2} = (\;2 \times p^{e_1 . e_2}\;) + (\;3 \times q^{e_1 . e_2}\;)\;mod\;N \rightarrow [3]$$
+
+$$c_2^{e_1} = (\;5 \times p^{e_1 . e_2}\;) + (\;7 \times q^{e_1 . e_2}\;)\;mod\;N \rightarrow [4]$$
+
+Now to get the value of `q`, we have to eliminate `p` from equations `[3]` and `[4]`.  To do that multiply equation `[3]` by  and equation `[4]` by $$2^{e_1.e_2}$$.
+
+$$5^{e1.e2} \times c_1^{e_2} \equiv (\;10^{e_1 . e_2} \times p^{e_1 . e_2}\;) + (\;15^{e_1 . e_2} \times q^{e_1 . e_2}\;)\;mod\;N \rightarrow [5]$$
+
+$$2^{e1.e2} \times c_2^{e_1} \equiv (\;10^{e_1 . e_2} \times p^{e_1 . e_2}\;) + (\;14^{e_1 . e_2} \times q^{e_1 . e_2}\;)\;mod\;N \rightarrow [6]$$
+
+Multiply eqution `[6]` with `-`, which results in the following equation,
+
+$$-\;2^{e1.e2} \times c_2^{e_1} \equiv -\;(\;10^{e_1 . e_2} \times p^{e_1 . e_2}\;) - (\;14^{e_1 . e_2} \times q^{e_1 . e_2}\;)\;mod\;N \rightarrow [7]$$
+
+Solving equations `[5]` and `[7]`, we get,
+
+$$(\;5^{e1.e2} \times c_1^{e_2}\;)\; - (\;2^{e1.e2} \times c_2^{e_1}\;) \equiv (\;15^{e_1 . e_2} \times q^{e_1 . e_2}\;) - (\;14^{e_1 . e_2} \times q^{e_1 . e_2}\;)\;mod\;N$$
+
+$$(\;5^{e1.e2} \times c_1^{e_2}\;)\; - (\;2^{e1.e2} \times c_2^{e_1}\;) \equiv q^{e_1 . e_2} \;\times \;(\;15^{e_1 . e_2}\;-\; 14^{e_1 . e_2}\;)\;mod\;N \rightarrow [8]$$
+
+From equation `[8]`, we can get q by the following steps:
+
+* If a congruence holds modulo a product of two integers, it holds modulo each integer.
+* The right-hand side of the congruence is a multiple of `q`, so the expression $$c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}$$ is also a multiple of `q`.
+* `N` is a multiple of `q`, meaning `q` is a divisor of both the expression and `N`.
+* The only divisors of `N` are `1`, `p`, `q`, and `N`. Since `q` divides only `N` and `N`, it's highly likely that $$\text{gcd}(c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}, N)$$ is `q`, not `N`.
+* There's no particular reason for `p` to divide $$c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}$$, making it very unlikely that $$\text{gcd}$$ would be `N`.
+* Therefore, it's highly probable that $$\text{gcd}(c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}, N)$$ equals `q`.
+
+After getting `q`, we can get `p` by  $$p = \frac{n}{q}$$, which we derived from the given, .
+
+### Solution
+
+```python
+from math import gcd
+
+N = 14905562257842714057932724129575002825405393502650869767115942606408600343380327866258982402447992564988466588305174271674657844352454543958847568190372446723549627752274442789184236490768272313187410077124234699854724907039770193680822495470532218905083459730998003622926152590597710213127952141056029516116785229504645179830037937222022291571738973603920664929150436463632305664687903244972880062028301085749434688159905768052041207513149370212313943117665914802379158613359049957688563885391972151218676545972118494969247440489763431359679770422939441710783575668679693678435669541781490217731619224470152467768073
+e1 = 12886657667389660800780796462970504910193928992888518978200029826975978624718627799215564700096007849924866627154987365059524315097631111242449314835868137
+e2 = 12110586673991788415780355139635579057920926864887110308343229256046868242179445444897790171351302575188607117081580121488253540215781625598048021161675697
+c1 = 14010729418703228234352465883041270611113735889838753433295478495763409056136734155612156934673988344882629541204985909650433819205298939877837314145082403528055884752079219150739849992921393509593620449489882380176216648401057401569934043087087362272303101549800941212057354903559653373299153430753882035233354304783275982332995766778499425529570008008029401325668301144188970480975565215953953985078281395545902102245755862663621187438677596628109967066418993851632543137353041712721919291521767262678140115188735994447949166616101182806820741928292882642234238450207472914232596747755261325098225968268926580993051
+c2 = 14386997138637978860748278986945098648507142864584111124202580365103793165811666987664851210230009375267398957979494066880296418013345006977654742303441030008490816239306394492168516278328851513359596253775965916326353050138738183351643338294802012193721879700283088378587949921991198231956871429805847767716137817313612304833733918657887480468724409753522369325138502059408241232155633806496752350562284794715321835226991147547651155287812485862794935695241612676255374480132722940682140395725089329445356434489384831036205387293760789976615210310436732813848937666608611803196199865435145094486231635966885932646519
+
+q = gcd((pow(c1, e2, N) * pow(5, e1 * e2, N)) - (pow(c2, e1, N) * pow(2, e1 * e2, N)), N)
+p = N // q
+
+print('crypto{' + str(p) + ',' + str(q) + '}')
+```
+
+{% hint style="info" %}
+Why `gcd((pow(c1, e2, N) * pow(5, e1 * e2, N)) - (pow(c2, e1, N) * pow(2, e1 * e2, N)), N)`?
+
+
+
+The equation
+
+$$
+\text{gcd}(c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}, N)
+$$
+
+is equivalent to the expression
+
+`gcd((pow(c1, e2, N) * pow(5, e1 * e2, N)) - (pow(c2, e1, N) * pow(2, e1 * e2, N)), N)`
+
+Here's why:
+
+* **Modular Property**: Both expressions represent congruences modulo `N`, the modulus. So, we're ensuring that the arithmetic operations stay within the range of integers modulo `N`.
+* **Exponential Terms**: Each term involving `5`, `c_1`, `2`, and `c_2` is raised to an exponent. In the first expression, $$5^{e_1 \cdot e_2}$$ means `5` raised to the power of $$e_1 \cdot e_2$$, and similarly for the others. In the second expression, `pow(c1, e2, N)` calculates $$c_1^{e_2} \mod N$$, and so forth. These are equivalent computations modulo `N`.
+* **Subtraction of Terms**: In both expressions, there's a subtraction operation between two terms.
+* **GCD Calculation**: The `gcd` function calculates the greatest common divisor of the difference between the two terms and `N`. This operation ensures that we're finding the greatest common divisor within the modular arithmetic context.
+
+In summary, both expressions represent the same mathematical operation: finding the greatest common divisor of a certain expression and `N`, where the expression involves exponentiation modulo `N`.
+{% endhint %}
+
+{% hint style="info" %}
+Why are we taking the mod n on each term in the equation $$c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}$$?
+
+
+
+Taking the modulo `N` of each term in Equation $$c_1^{e_2} \times 5^{e_1 \cdot e_2} - c_2^{e_1} \times 2^{e_1 \cdot e_2}$$ is essential because it ensures that the arithmetic operations stay within the range of integers modulo `N`. This practice is common in cryptographic operations, particularly in modular arithmetic used in RSA encryption and related algorithms.
+
+Here's why each term is taken modulo `N`:
+
+1. **pow(c1, e2, N)**: This computes $$c_1^{e_2} \mod N$$. Taking the exponentiation modulo `N` ensures that the result stays within the range of `0` to `N-1`.
+2. **pow(5, e1 \* e2, N)**: This computes $$5^{e_1 \cdot e_2} \mod N$$. Again, this ensures that the result remains within the range of integers modulo `N`.
+3. **pow(c2, e1, N)**: This computes $$c_2^{e_1} \mod N$$. Similar to the previous terms, taking the exponentiation modulo `N` ensures that the result is within the range of integers modulo `N`.
+4. **pow(2, e1 \* e2, N)**: This computes $$2^{e_1 \cdot e_2} \mod N$$, ensuring the result remains within the range of integers modulo `N`.
+5. **gcd(..., N)**: Finally, the `gcd` function is applied to the difference of the two terms, followed by taking modulo `N`. This ensures that the final result, the greatest common divisor, is also within the range of integers modulo `N`.
+
+Taking each term modulo `N` is crucial for maintaining the correctness and security of cryptographic operations, preventing arithmetic overflow, and ensuring that the computations are performed within the finite field defined by `N`.
+{% endhint %}
+
